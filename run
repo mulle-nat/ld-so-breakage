@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+
+for exe in ./build/main_[abcd][abcd][abcd][abcd]
+do
+   echo
+   echo ==================================
+   echo
+   echo "${exe}"
+   "${exe}"  2>&1 | sed -n '/^--/p'
+
+   echo
+   echo ----------------------------------
+   echo
+
+   echo USE_A="YES" "${exe}"
+   USE_A="YES" "${exe}" 2>&1 | sed -n '/^--/p'
+done
