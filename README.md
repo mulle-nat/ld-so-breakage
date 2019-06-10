@@ -19,9 +19,11 @@ DESCRIPTION
        ORDER** of their registration; no arguments are passed.
 ```
 
-> The main problem for `atexit` is that **ld.so** mistakenly
+
+> ~~The main problem for `atexit` is that **ld.so** mistakenly
 > equates `atexit` handlers with `__attribute__((destructor))` functions,
-> which they are not. But the technical problem actually affects both.
+> which they are not.~~ But the technical problem actually affects both. 
+> See [ELF Addendum](#elf-addendum) for more.
 
 
 
@@ -78,3 +80,32 @@ USE_A=YES ./build/main_dabc
 -- run atexit_a
 -- run atexit_b
 ```
+
+---
+
+## ELF Addendum
+
+Reading up on the [ELF](http://refspecs.linuxbase.org/elf/elf.pdf) specification, it's now clear,
+that ELF actually specifies that `atexit` should be used for `__attribute__((destructor))__`. 
+
+To me it seems clear, that the ELF specification was not written with any pre-exit unloading of
+shared libraries in mind. There is no chapter on unloading in the ELF spec and a search 
+for `unload` turns up empty.
+
+```
+Although the atexit(BA_OS)  termination processing normally will be done, it is not guaranteed to have executed upon process death. In particular, the process will not execute the termination processing if it calls _exit [see exit (BA_OS)] or if the process dies because it received a signal that it neither caught nor ignored.
+```
+
+This is just normal `atexit` behavior.
+
+```
+The dynamic linker is not responsible for calling the executable file's .init section or registering the executable file's .fini section with atexit(BA_OS). Termination functions specified by users via the atexit(BA_OS) mechanism must be executed before any termination functions of shared objects.
+```
+
+I see this as the point of confusion. "Users" is code called from "main" here. This is just restating what `atexit` does.
+
+But I think `ld.so` reads more into it and assumes "users" are functions in the shared object. And then things get 
+really complicated. But why would the ELF mandate using `atexit` for destruction, if it then implies a totally
+complicated setup in a byline, when dealing with the main executable ? And also breaking `atexit` semantics in the process.
+
+
