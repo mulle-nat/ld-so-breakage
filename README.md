@@ -85,7 +85,7 @@ USE_A=YES ./build/main_dabc
 
 ## ELF Addendum
 
-Reading up on the [ELF](http://refspecs.linuxbase.org/elf/elf.pdf) specification, it's now clear,
+Reading up on the [ELF](http://refspecs.linuxbase.org/elf/elf.pdf) specification, it's now clear to me,
 that ELF actually specifies that `atexit` should be used for `__attribute__((destructor))__`. 
 
 To me it seems clear, that the ELF specification was not written with any pre-exit unloading of
