@@ -1,10 +1,5 @@
 # Shows breakage involving `atexit` on linux
 
-There seems to be [bugs](https://github.com/mulle-nat/LD_PRELOAD-breakage-linux)
-[everywhere](https://github.com/mulle-nat/atexit-breakage-linux) in the way
-shared library are loaded and sequenced on linux. Because of that well
-working programs may mysteriously fail after relinking.
-
 **ld-so-breakage** shows how `atexit` callbacks are invoked in the wrong order. 
 
 >This also happens to `__attribute__((destructor))` calls.
@@ -85,7 +80,7 @@ USE_A=YES ./build/main_dabc
 
 ## ELF Addendum
 
-Reading up on the [ELF](http://refspecs.linuxbase.org/elf/elf.pdf) specification, it's now clear to me,
+Reading up on the [ELF](http://refspecs.linuxbase.org/elf/elf.pdf) specification, it seems clear to me,
 that ELF actually specifies that `atexit` should be used for `__attribute__((destructor))__`. 
 
 To me it seems clear, that the ELF specification was not written with any pre-exit unloading of
@@ -107,5 +102,19 @@ I see this as the point of confusion. "Users" is code called from "main" here. T
 But I think `ld.so` reads more into it and assumes "users" are functions in the shared object. And then things get 
 really complicated. But why would the ELF mandate using `atexit` for destruction, if it then implies a totally
 complicated setup in a byline, when dealing with the main executable ? And also breaking `atexit` semantics in the process.
+
+
+## LSB Addendum
+
+It turns out the real culprit might be **Intel** :) How so ?
+
+Check out the [Linux Standard Baee Core](http://refspecs.linuxbase.org/LSB_5.0.0/LSB-Core-generic/LSB-Core-generic.html#BASELIB---CXA-FINALIZE) definition.
+
+It mandates that 
+
+* `__cxa_finalize` calls `atexit` 
+* that `dlclose` calls `__cxa_finalize`
+
+That's basically the underlying problem. And who wrote that specification ? Intel apparently.
 
 
