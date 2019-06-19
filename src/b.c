@@ -29,10 +29,10 @@ struct methodtable
 struct methodtable  *table;
 
 
-static void   atexit_b( void)
+static void   b_atexit( void)
 {
    fprintf( stderr, "-> %s\n", __PRETTY_FUNCTION__);
-   fprintf( stderr, "-- run atexit_b\n");
+   fprintf( stderr, "-- run b_atexit\n");
    e_allocator.free( table);
    fprintf( stderr, "<- %s\n", __PRETTY_FUNCTION__);
 }
@@ -50,11 +50,11 @@ void   b_init( int param)
    {
       once = 1;
 
-      atexit( atexit_b);
+      atexit( b_atexit);
 
       table          = e_allocator.calloc( 1, sizeof( struct method) * param + sizeof( struct methodtable));
       table->methods = (struct method *) (table + 1);
-      fprintf( stderr, "-- install atexit_b\n");
+      fprintf( stderr, "-- install b_atexit\n");
    }
    fprintf( stderr, "<- %s %d (%d)\n", __PRETTY_FUNCTION__, param, once);
 }

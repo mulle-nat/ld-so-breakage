@@ -40,6 +40,16 @@ target_link_libraries( lib_d
 lib_b
 )
 
+if( APPLE)
+   target_link_libraries( lib_a "-undefined dynamic_lookup")
+   target_link_libraries( lib_b "-undefined dynamic_lookup")
+   target_link_libraries( lib_d "-undefined dynamic_lookup")
+   target_link_libraries( lib_e "-undefined dynamic_lookup")
+else()
+   set( AS_NEEDED -Wl,--as-needed)
+   set( NO_AS_NEEDED -Wl,--no-as-needed)
+endif()
+
 
 ##
 ## The linux linker is extemely picky about the order of the linked files.
@@ -59,10 +69,10 @@ lib_b
 # add_dependencies( main_abcd lib_b lib_c lib_d)
 #
 # target_link_libraries( main_abcd
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
 # lib_b
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
 # )
 #
 #
@@ -73,10 +83,10 @@ lib_b
 # add_dependencies( main_abdc lib_b lib_c lib_d)
 #
 # target_link_libraries( main_abdc
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
 # lib_b
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
 # )
 #
 #
@@ -87,10 +97,10 @@ lib_b
 # add_dependencies( main_acbd lib_b lib_c lib_d)
 #
 # target_link_libraries( main_acbd
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
 # lib_b
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
 # )
 #
 #
@@ -101,9 +111,9 @@ lib_b
 # add_dependencies( main_acdb lib_b lib_c lib_d)
 #
 # target_link_libraries( main_acdb
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
 # lib_b
 # )
 
@@ -114,10 +124,10 @@ src/main.c
 add_dependencies( main_adbc lib_b lib_c lib_d)
 
 target_link_libraries( main_adbc
--Wl,--no-as-needed lib_a -Wl,--as-needed
--Wl,--no-as-needed lib_d -Wl,--as-needed
+${NO_AS_NEEDED} lib_a ${AS_NEEDED}
+${NO_AS_NEEDED} lib_d ${AS_NEEDED}
 lib_b
--Wl,--no-as-needed lib_c -Wl,--as-needed
+${NO_AS_NEEDED} lib_c ${AS_NEEDED}
 )
 
 
@@ -128,9 +138,9 @@ lib_b
 # add_dependencies( main_adcb lib_b lib_c lib_d)
 #
 # target_link_libraries( main_adcb
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
 # lib_b
 # )
 
@@ -146,9 +156,9 @@ lib_b
 #
 # target_link_libraries( main_bacd
 # lib_b
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
 # )
 #
 #
@@ -160,9 +170,9 @@ lib_b
 #
 # target_link_libraries( main_badc
 # lib_b
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
 # )
 #
 #
@@ -174,9 +184,9 @@ lib_b
 #
 # target_link_libraries( main_bcad
 # lib_b
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
 # )
 #
 #
@@ -188,9 +198,9 @@ lib_b
 #
 # target_link_libraries( main_bcda
 # lib_b
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
 # )
 #
 # add_executable( main_bdac
@@ -201,9 +211,9 @@ lib_b
 #
 # target_link_libraries( main_bdac
 # lib_b
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
 # )
 #
 #
@@ -215,9 +225,9 @@ lib_b
 #
 # target_link_libraries( main_bdca
 # lib_b
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
 # )
 
 
@@ -232,10 +242,10 @@ lib_b
 # add_dependencies( main_cabd lib_b lib_c lib_d)
 #
 # target_link_libraries( main_cabd
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
 # lib_b
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
 # )
 #
 #
@@ -246,9 +256,9 @@ lib_b
 # add_dependencies( main_cadb lib_b lib_c lib_d)
 #
 # target_link_libraries( main_cadb
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
 # lib_b
 # )
 #
@@ -260,10 +270,10 @@ lib_b
 # add_dependencies( main_cbad lib_b lib_c lib_d)
 #
 # target_link_libraries( main_cbad
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
 # lib_b
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
 # )
 #
 #
@@ -274,10 +284,10 @@ lib_b
 # add_dependencies( main_cbda lib_b lib_c lib_d)
 #
 # target_link_libraries( main_cbda
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
 # lib_b
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
 # )
 #
 # add_executable( main_cdab
@@ -287,9 +297,9 @@ lib_b
 # add_dependencies( main_cdab lib_b lib_c lib_d)
 #
 # target_link_libraries( main_cdab
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
 # lib_b
 # )
 #
@@ -300,10 +310,10 @@ lib_b
 # add_dependencies( main_cdba lib_b lib_c lib_d)
 #
 # target_link_libraries( main_cdba
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
 # lib_b
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
 # )
 
 
@@ -318,10 +328,10 @@ src/main.c
 add_dependencies( main_dabc lib_b lib_c lib_d)
 
 target_link_libraries( main_dabc
--Wl,--no-as-needed lib_d -Wl,--as-needed
--Wl,--no-as-needed lib_a -Wl,--as-needed
+${NO_AS_NEEDED} lib_d ${AS_NEEDED}
+${NO_AS_NEEDED} lib_a ${AS_NEEDED}
 lib_b
--Wl,--no-as-needed lib_c -Wl,--as-needed
+${NO_AS_NEEDED} lib_c ${AS_NEEDED}
 )
 
 
@@ -332,9 +342,9 @@ lib_b
 # add_dependencies( main_dacb lib_b lib_c lib_d)
 #
 # target_link_libraries( main_dacb
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
 # lib_b
 # )
 
@@ -346,10 +356,10 @@ src/main.c
 add_dependencies( main_dbac lib_b lib_c lib_d)
 
 target_link_libraries( main_dbac
--Wl,--no-as-needed lib_d -Wl,--as-needed
+${NO_AS_NEEDED} lib_d ${AS_NEEDED}
 lib_b
--Wl,--no-as-needed lib_a -Wl,--as-needed
--Wl,--no-as-needed lib_c -Wl,--as-needed
+${NO_AS_NEEDED} lib_a ${AS_NEEDED}
+${NO_AS_NEEDED} lib_c ${AS_NEEDED}
 )
 
 
@@ -360,10 +370,10 @@ src/main.c
 add_dependencies( main_dbca lib_b lib_c lib_d)
 
 target_link_libraries( main_dbca
--Wl,--no-as-needed lib_d -Wl,--as-needed
+${NO_AS_NEEDED} lib_d ${AS_NEEDED}
 lib_b
--Wl,--no-as-needed lib_c -Wl,--as-needed
--Wl,--no-as-needed lib_a -Wl,--as-needed
+${NO_AS_NEEDED} lib_c ${AS_NEEDED}
+${NO_AS_NEEDED} lib_a ${AS_NEEDED}
 )
 
 # add_executable( main_dcab
@@ -373,9 +383,9 @@ lib_b
 # add_dependencies( main_dcab lib_b lib_c lib_d)
 #
 # target_link_libraries( main_dcab
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
 # lib_b
 # )
 #
@@ -387,9 +397,9 @@ lib_b
 # add_dependencies( main_dcba lib_b lib_c lib_d)
 #
 # target_link_libraries( main_dcba
-# -Wl,--no-as-needed lib_d -Wl,--as-needed
-# -Wl,--no-as-needed lib_c -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_d ${AS_NEEDED}
+# ${NO_AS_NEEDED} lib_c ${AS_NEEDED}
 # lib_b
-# -Wl,--no-as-needed lib_a -Wl,--as-needed
+# ${NO_AS_NEEDED} lib_a ${AS_NEEDED}
 # )
 

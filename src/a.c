@@ -29,10 +29,10 @@ static void  a_free( void *p)
 
 
 
-static void   atexit_a( void)
+static void   a_atexit( void)
 {
    fprintf( stderr, "-> %s\n", __PRETTY_FUNCTION__);
-   fprintf( stderr, "-- run atexit_a\n");
+   fprintf( stderr, "-- run a_atexit\n");
 //   fprintf( stderr, "total: %ld\n", total);
    fprintf( stderr, "<- %s\n", __PRETTY_FUNCTION__);
 }
@@ -46,8 +46,8 @@ static void  constructor_a( void)
    {
       e_allocator.calloc = a_calloc;
       e_allocator.free   = a_free;
-      fprintf( stderr, "-- install atexit_a\n");
-      atexit( atexit_a);
+      fprintf( stderr, "-- install a_atexit\n");
+      atexit( a_atexit);
    }
    fprintf( stderr, "<- %s\n", __PRETTY_FUNCTION__);
 }
