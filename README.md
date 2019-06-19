@@ -106,15 +106,5 @@ complicated setup in a byline, when dealing with the main executable ? And also 
 
 ## LSB Addendum
 
-It turns out the real culprit might be **Intel** :) How so ?
-
-Check out the [Linux Standard Baee Core](http://refspecs.linuxbase.org/LSB_5.0.0/LSB-Core-generic/LSB-Core-generic.html#BASELIB---CXA-FINALIZE) definition.
-
-It mandates that 
-
-* `__cxa_finalize` calls `atexit` 
-* that `dlclose` calls `__cxa_finalize`
-
-That's basically the underlying problem. And who wrote that specification ? Intel apparently.
-
-
+The [Linux Standard Base Core](http://refspecs.linuxbase.org/LSB_5.0.0/LSB-Core-generic/LSB-Core-generic.html#BASELIB---CXA-FINALIZE) definition actually specifies it correctly, so that `atexit` will only be called at process end.
+But the implementation is wrong and calls `atexit`, whenever `dlclose` hits.
